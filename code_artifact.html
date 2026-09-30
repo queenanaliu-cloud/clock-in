@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 每日可愛打卡小幫手 🌟</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti CDN for celebration animation -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: Inter & Nunito for cute rounded feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #fce7f3 0%, #e0e7ff 50%, #fef3c7 100%);
+            min-height: 100vh;
+        }
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 2.5s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-gray-700 flex flex-col items-center justify-start p-4 sm:p-8">
+
+    <header class="text-center mb-6 mt-4">
+        <div class="inline-block animate-float">
+            <span class="text-4xl sm:text-5xl">🐱✨</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-pink-500 mt-2 tracking-wide drop-shadow-sm">每日可愛打卡</h1>
+        <p class="text-sm sm:text-base text-gray-500 font-semibold mt-1">記錄你每一天的美好心情與成長足跡！</p>
+    </header>
+
+    <main class="w-full max-w-xl bg-white/80 backdrop-blur-md rounded-3xl shadow-xl border-4 border-pink-100 p-6 sm:p-8 flex flex-col gap-6">
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-pink-50 rounded-2xl p-4 text-center border-2 border-pink-200 shadow-inner">
+                <span class="text-xs sm:text-sm font-bold text-pink-400 block uppercase tracking-wider">今日已打卡</span>
+                <span id="todayCount" class="text-3xl sm:text-4xl font-extrabold text-pink-600">0</span>
+                <span class="text-xs text-pink-400 font-semibold block mt-0.5">次</span>
+            </div>
+            <div class="bg-purple-50 rounded-2xl p-4 text-center border-2 border-purple-200 shadow-inner">
+                <span class="text-xs sm:text-sm font-bold text-purple-400 block uppercase tracking-wider">總累積打卡</span>
+                <span id="totalCount" class="text-3xl sm:text-4xl font-extrabold text-purple-600">0</span>
+                <span class="text-xs text-purple-400 font-semibold block mt-0.5">次</span>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm sm:text-base font-bold text-gray-600 flex items-center gap-2">
+                <span>🎨</span> 今天心情怎麼樣呢？
+            </label>
+            <div id="moodContainer" class="grid grid-cols-5 gap-2 sm:gap-3">
+                <!-- Mood options injected via JS or predefined -->
+                <button type="button" onclick="selectMood('🥳', '超讚', this)" class="mood-btn flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-pink-200 bg-pink-50 hover:bg-pink-100 transition-all transform hover:scale-105 shadow-sm active:scale-95 group">
+                    <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">🥳</span>
+                    <span class="text-xs font-bold text-pink-600 mt-1">超讚</span>
+                </button>
+                <button type="button" onclick="selectMood('😊', '開心', this)" class="mood-btn flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 transition-all transform hover:scale-105 shadow-sm active:scale-95 group">
+                    <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">😊</span>
+                    <span class="text-xs font-bold text-amber-600 mt-1">開心</span>
+                </button>
+                <button type="button" onclick="selectMood('😌', '平靜', this)" class="mood-btn flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 transition-all transform hover:scale-105 shadow-sm active:scale-95 group">
+                    <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">😌</span>
+                    <span class="text-xs font-bold text-blue-600 mt-1">平靜</span>
+                </button>
+                <button type="button" onclick="selectMood('😴', '累累', this)" class="mood-btn flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-purple-200 bg-purple-50 hover:bg-purple-100 transition-all transform hover:scale-105 shadow-sm active:scale-95 group">
+                    <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">😴</span>
+                    <span class="text-xs font-bold text-purple-600 mt-1">累累</span>
+                </button>
+                <button type="button" onclick="selectMood('💪', '加油', this)" class="mood-btn flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 transition-all transform hover:scale-105 shadow-sm active:scale-95 group">
+                    <span class="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">💪</span>
+                    <span class="text-xs font-bold text-emerald-600 mt-1">加油</span>
+                </button>
+            </div>
+            <!-- Selected indicator -->
+            <div class="text-xs font-bold text-gray-400 text-center mt-1">
+                目前選定心情：<span id="selectedMoodText" class="text-pink-500 font-extrabold text-sm">😊 開心</span>
+            </div>
+        </div>
+
+        <div class="flex flex-col items-center my-2">
+            <button id="checkInBtn" onclick="performCheckIn()" class="w-full sm:w-4/5 py-4 px-8 bg-gradient-to-r from-pink-400 via-pink-500 to-rose-400 text-white font-extrabold text-xl sm:text-2xl rounded-3xl shadow-lg hover:shadow-2xl hover:from-pink-500 hover:to-rose-500 transform hover:-translate-y-1 active:translate-y-0.5 transition-all animate-pulse-slow flex items-center justify-center gap-3 border-4 border-white">
+                <span class="text-2xl sm:text-3xl">💖</span> 今天打卡！ <span class="text-2xl sm:text-3xl">✨</span>
+            </button>
+        </div>
+
+        <div class="flex flex-col gap-3 pt-2 border-t-2 border-pink-100">
+            <div class="flex items-center justify-between">
+                <h2 class="text-base sm:text-lg font-extrabold text-gray-700 flex items-center gap-2">
+                    <span>📜</span> 打卡歷史紀錄
+                </h2>
+                <button onclick="clearHistory()" class="text-xs font-bold text-gray-400 hover:text-red-500 transition-colors bg-gray-100 hover:bg-red-50 py-1 px-3 rounded-xl border border-gray-200">
+                    清空紀錄
+                </button>
+            </div>
+            <div id="historyList" class="max-h-60 overflow-y-auto flex flex-col gap-2.5 pr-1">
+                <!-- Dynamically populated history items -->
+                <div class="text-center py-6 text-gray-400 text-sm font-semibold bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                    目前還沒有打卡紀錄喔，快按上方按鈕打卡吧！🌸
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="mt-6 text-center text-xs font-bold text-gray-400">
+        Made with 💖 for a wonderful day!
+    </footer>
+
+    <script>
+        // State management
+        let currentMoodEmoji = '😊';
+        let currentMoodName = '開心';
+        let historyData = [];
+
+        // Load data from localStorage on start
+        window.onload = function() {
+            loadData();
+            // Default select the second button (開心) visually
+            const buttons = document.querySelectorAll('.mood-btn');
+            if(buttons[1]) {
+                buttons[1].classList.add('ring-4', 'ring-pink-300', 'bg-pink-100');
+            }
+        };
+
+        function selectMood(emoji, name, element) {
+            currentMoodEmoji = emoji;
+            currentMoodName = name;
+            document.getElementById('selectedMoodText').innerText = `${emoji} ${name}`;
+
+            // Reset all mood button borders/shadows
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-pink-300', 'bg-pink-100');
+            });
+            // Highlight selected
+            element.classList.add('ring-4', 'ring-pink-300', 'bg-pink-100');
+        }
+
+        function performCheckIn() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const dateStr = `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
+            const dateOnlyStr = `${year}/${month}/${day}`;
+
+            const newRecord = {
+                id: Date.now(),
+                dateStr: dateStr,
+                dateOnly: dateOnlyStr,
+                emoji: currentMoodEmoji,
+                name: currentMoodName
+            };
+
+            historyData.unshift(newRecord);
+            saveData();
+            updateUI();
+            triggerConfetti();
+        }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#f472b6', '#fb7185', '#60a5fa', '#34d399', '#facc15']
+            });
+        }
+
+        function saveData() {
+            localStorage.setItem('cute_checkin_history', JSON.stringify(historyData));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('cute_checkin_history');
+            if (saved) {
+                try {
+                    historyData = JSON.parse(saved);
+                } catch (e) {
+                    historyData = [];
+                }
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            const todayStr = new Date().toLocaleDateString('zh-TW', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).replace(/\//g, '/'); // Match YYYY/MM/DD format approx or string match
+
+            // Calculate today's count
+            const todayDateOnly = new Date();
+            const tYear = todayDateOnly.getFullYear();
+            const tMonth = String(todayDateOnly.getMonth() + 1).padStart(2, '0');
+            const tDay = String(todayDateOnly.getDate()).padStart(2, '0');
+            const todayPrefix = `${tYear}/${tMonth}/${tDay}`;
+
+            let todayCount = 0;
+            historyData.forEach(item => {
+                if (item.dateOnly === todayPrefix) {
+                    todayCount++;
+                }
+            });
+
+            const totalCount = historyData.length;
+
+            document.getElementById('todayCount').innerText = todayCount;
+            document.getElementById('totalCount').innerText = totalCount;
+
+            // Render history list
+            const historyListEl = document.getElementById('historyList');
+            if (historyData.length === 0) {
+                historyListEl.innerHTML = `
+                    <div class="text-center py-6 text-gray-400 text-sm font-semibold bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                        目前還沒有打卡紀錄喔，快按上方按鈕打卡吧！🌸
+                    </div>
+                `;
+                return;
+            }
+
+            let htmlContent = '';
+            historyData.forEach((item, index) => {
+                htmlContent += `
+                    <div class="flex items-center justify-between p-3.5 bg-pink-50/50 hover:bg-pink-50 rounded-2xl border border-pink-100 transition-colors shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl bg-white p-2 rounded-xl shadow-sm border border-pink-100">${item.emoji}</span>
+                            <div>
+                                <span class="text-xs sm:text-sm font-bold text-gray-700 block">${item.name}心情打卡</span>
+                                <span class="text-xs text-gray-400 font-semibold">${item.dateStr}</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold text-pink-400 bg-white px-2.5 py-1 rounded-full shadow-xs border border-pink-100">#${historyData.length - index}</span>
+                    </div>
+                `;
+            });
+            historyListEl.innerHTML = htmlContent;
+        }
+
+        function clearHistory() {
+            if (historyData.length === 0) return;
+            if (confirm('確定要清空所有的打卡紀錄嗎？')) {
+                historyData = [];
+                saveData();
+                updateUI();
+            }
+        }
+    </script>
+</body>
+</html>
