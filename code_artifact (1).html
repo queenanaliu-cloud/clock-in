@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐻 每日溫馨打卡・專屬小天地</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Plus Jakarta Sans / Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f5f3ef 0%, #e8ede6 50%, #eef2f6 100%);
+            min-height: 100vh;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes pulse-gentle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .animate-pulse-gentle {
+            animation: pulse-gentle 3s ease-in-out infinite;
+        }
+        /* Custom scrollbar for history */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-700 flex flex-col items-center justify-center p-4 sm:p-6">
+
+    <!-- VIEW 1: LOGIN / WELCOME PAGE -->
+    <div id="loginView" class="w-full max-w-md bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border-2 border-amber-100 p-8 flex flex-col gap-6 transition-all duration-500">
+        <!-- Header / Mascot -->
+        <div class="text-center flex flex-col items-center">
+            <div class="w-20 h-20 bg-amber-50 rounded-2xl border-2 border-amber-200 flex items-center justify-center text-4xl shadow-inner mb-3 animate-float">
+                🦕
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-wide">每日打卡小天地</h1>
+            <p class="text-sm text-slate-500 font-semibold mt-1">今天過得怎麼樣？一起記錄美好的一天吧！✨</p>
+        </div>
+
+        <!-- Nickname Input -->
+        <div class="flex flex-col gap-2">
+            <label for="nicknameInput" class="text-sm font-bold text-slate-600 flex items-center gap-1.5">
+                <i data-lucide="user" class="w-4 h-4 text-amber-500"></i> 你的專屬暱稱
+            </label>
+            <input type="text" id="nicknameInput" placeholder="例如：阿翔、小宇、Leo..." 
+                class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-amber-400 focus:bg-white text-slate-700 font-semibold transition-all shadow-xs">
+        </div>
+
+        <!-- Initial Mood Selection -->
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-slate-600 flex items-center gap-1.5">
+                <i data-lucide="smile" class="w-4 h-4 text-amber-500"></i> 先選個今日心情
+            </label>
+            <div class="grid grid-cols-5 gap-2">
+                <button type="button" onclick="selectLoginMood('🌟', '超讚', this)" class="login-mood-btn flex flex-col items-center justify-center p-2.5 rounded-2xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 transition-all transform hover:scale-105 active:scale-95 group ring-4 ring-amber-300 bg-amber-100">
+                    <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🌟</span>
+                    <span class="text-[11px] font-bold text-amber-700 mt-1">超讚</span>
+                </button>
+                <button type="button" onclick="selectLoginMood('🍃', '平靜', this)" class="login-mood-btn flex flex-col items-center justify-center p-2.5 rounded-2xl border-2 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 transition-all transform hover:scale-105 active:scale-95 group">
+                    <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🍃</span>
+                    <span class="text-[11px] font-bold text-emerald-700 mt-1">平靜</span>
+                </button>
+                <button type="button" onclick="selectLoginMood('🔥', '努力', this)" class="login-mood-btn flex flex-col items-center justify-center p-2.5 rounded-2xl border-2 border-orange-200 bg-orange-50 hover:bg-orange-100 transition-all transform hover:scale-105 active:scale-95 group">
+                    <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🔥</span>
+                    <span class="text-[11px] font-bold text-orange-700 mt-1">努力</span>
+                </button>
+                <button type="button" onclick="selectLoginMood('☕', '放鬆', this)" class="login-mood-btn flex flex-col items-center justify-center p-2.5 rounded-2xl border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 transition-all transform hover:scale-105 active:scale-95 group">
+                    <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">☕</span>
+                    <span class="text-[11px] font-bold text-blue-700 mt-1">放鬆</span>
+                </button>
+                <button type="button" onclick="selectLoginMood('✨', '期待', this)" class="login-mood-btn flex flex-col items-center justify-center p-2.5 rounded-2xl border-2 border-purple-200 bg-purple-50 hover:bg-purple-100 transition-all transform hover:scale-105 active:scale-95 group">
+                    <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">✨</span>
+                    <span class="text-[11px] font-bold text-purple-700 mt-1">期待</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Start Button -->
+        <button onclick="handleLogin()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-extrabold text-lg rounded-2xl shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-orange-600 transform hover:-translate-y-0.5 active:translate-y-0.5 transition-all flex items-center justify-center gap-2 mt-2">
+            <span>開始今日打卡</span>
+            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+
+        <div id="loginError" class="text-xs text-red-500 font-bold text-center hidden">
+            請先輸入你的專屬暱稱喔！
+        </div>
+    </div>
+
+    <!-- VIEW 2: DASHBOARD / MAIN PANEL (Hidden initially) -->
+    <div id="dashboardView" class="w-full max-w-xl bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border-2 border-emerald-100 p-6 sm:p-8 flex flex-col gap-6 hidden transition-all duration-500">
+        
+        <!-- Top Bar with User Info & Logout -->
+        <div class="flex items-center justify-between pb-4 border-b-2 border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-emerald-50 rounded-2xl border-2 border-emerald-200 flex items-center justify-center text-2xl shadow-xs">
+                    🐻
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-emerald-600 block uppercase tracking-wider">歡迎回來</span>
+                    <h2 id="displayNickname" class="text-lg sm:text-xl font-extrabold text-slate-800">使用者</h2>
+                </div>
+            </div>
+            <button onclick="logout()" class="text-xs font-bold text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 py-2 px-3.5 rounded-xl transition-colors flex items-center gap-1.5">
+                <i data-lucide="log-out" class="w-3.5 h-3.5"></i> 更改暱稱
+            </button>
+        </div>
+
+        <!-- Date & Greeting Banner -->
+        <div class="bg-gradient-to-r from-emerald-500/10 via-amber-500/10 to-blue-500/10 rounded-2xl p-4 border border-emerald-200/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div>
+                <span id="currentDateStr" class="text-xs font-bold text-slate-500 block">2026/09/30 星期三</span>
+                <p id="greetingText" class="text-sm font-extrabold text-slate-700 mt-0.5">美好的一天，保持好節奏！💪</p>
+            </div>
+            <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl shadow-xs border border-slate-200">
+                <span class="text-sm">今日心情：</span>
+                <span id="headerCurrentMood" class="text-base font-bold text-amber-600">🌟 超讚</span>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-emerald-50/70 rounded-2xl p-4 text-center border-2 border-emerald-200 shadow-inner">
+                <span class="text-xs sm:text-sm font-bold text-emerald-600 block uppercase tracking-wider">今日已打卡</span>
+                <span id="todayCount" class="text-3xl sm:text-4xl font-extrabold text-emerald-700">0</span>
+                <span class="text-xs text-emerald-600 font-semibold block mt-0.5">次</span>
+            </div>
+            <div class="bg-blue-50/70 rounded-2xl p-4 text-center border-2 border-blue-200 shadow-inner">
+                <span class="text-xs sm:text-sm font-bold text-blue-600 block uppercase tracking-wider">累積總次數</span>
+                <span id="totalCount" class="text-3xl sm:text-4xl font-extrabold text-blue-700">0</span>
+                <span class="text-xs text-blue-600 font-semibold block mt-0.5">次</span>
+            </div>
+        </div>
+
+        <!-- Mood Selector for Check-in -->
+        <div class="flex flex-col gap-2">
+            <label class="text-sm sm:text-base font-bold text-slate-700 flex items-center gap-2">
+                <i data-lucide="heart-handshake" class="w-4 h-4 text-emerald-500"></i> 更新當下心情並打卡
+            </label>
+            <div class="grid grid-cols-5 gap-2">
+                <button type="button" onclick="selectDashboardMood('🌟', '超讚', this)" class="dash-mood-btn flex flex-col items-center justify-center p-2.5 rounded-2xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 transition-all transform hover:scale-105 active:scale-95 group ring-4 ring-amber-300 bg-amber-100">
+                    <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🌟</span>
+                    <span class="text-[11px] font-bold text-amber-700 mt-1">超讚</span>
+                </button>
+                <button type="button" onclick="selectDashboardMood('🍃', '平靜', this)" class="dash-mood-btn flex flex-col items-center justify-center p-2.5 rounded-2xl border-2 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 transition-all transform hover:scale-105 active:scale-95 group">
+                    <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🍃</span>
+                    <span class="text-[11px] font-bold text-emerald-700 mt-1">平靜</span>
+                </button>
+                <button type="button" onclick="selectDashboardMood('🔥', '努力', this)" class="dash-mood-btn flex flex-col items-center justify-center p-2.5 rounded-2xl border-2 border-orange-200 bg-orange-50 hover:bg-orange-100 transition-all transform hover:scale-105 active:scale-95 group">
+                    <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🔥</span>
+                    <span class="text-[11px] font-bold text-orange-700 mt-1">努力</span>
+                </button>
+                <button type="button" onclick="selectDashboardMood('☕', '放鬆', this)" class="dash-mood-btn flex flex-col items-center justify-center p-2.5 rounded-2xl border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 transition-all transform hover:scale-105 active:scale-95 group">
+                    <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">☕</span>
+                    <span class="text-[11px] font-bold text-blue-700 mt-1">放鬆</span>
+                </button>
+                <button type="button" onclick="selectDashboardMood('✨', '期待', this)" class="dash-mood-btn flex flex-col items-center justify-center p-2.5 rounded-2xl border-2 border-purple-200 bg-purple-50 hover:bg-purple-100 transition-all transform hover:scale-105 active:scale-95 group">
+                    <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">✨</span>
+                    <span class="text-[11px] font-bold text-purple-700 mt-1">期待</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Check-in Action Button -->
+        <div class="flex flex-col items-center my-1">
+            <button onclick="performCheckIn()" class="w-full sm:w-4/5 py-4 px-8 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 text-white font-extrabold text-xl rounded-2xl shadow-lg hover:shadow-2xl hover:from-emerald-600 hover:to-cyan-700 transform hover:-translate-y-1 active:translate-y-0.5 transition-all animate-pulse-gentle flex items-center justify-center gap-3 border-2 border-white/40">
+                <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+                <span>立即完成打卡！</span>
+            </button>
+        </div>
+
+        <!-- History List Section -->
+        <div class="flex flex-col gap-3 pt-3 border-t-2 border-slate-100">
+            <div class="flex items-center justify-between">
+                <h3 class="text-base font-extrabold text-slate-700 flex items-center gap-2">
+                    <i data-lucide="history" class="w-4 h-4 text-emerald-500"></i> 打卡歷史紀錄
+                </h3>
+                <button onclick="clearHistory()" class="text-xs font-bold text-slate-400 hover:text-red-500 transition-colors bg-slate-100 hover:bg-red-50 py-1.5 px-3 rounded-xl border border-slate-200 flex items-center gap-1">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> 清空紀錄
+                </button>
+            </div>
+            <div id="historyList" class="max-h-56 overflow-y-auto flex flex-col gap-2.5 pr-1">
+                <!-- Dynamically populated history items -->
+                <div class="text-center py-6 text-slate-400 text-sm font-semibold bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                    目前還沒有打卡紀錄喔，快按上方按鈕打卡吧！🌿
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-6 text-center text-xs font-bold text-slate-400">
+        Daily Check-in Space • Keep Moving Forward 🚀
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // State variables
+        let currentUser = '';
+        let activeMoodEmoji = '🌟';
+        let activeMoodName = '超讚';
+        let historyData = [];
+
+        // Check localStorage on load
+        window.onload = function() {
+            const savedUser = localStorage.getItem('boy_checkin_nickname');
+            if (savedUser) {
+                currentUser = savedUser;
+                document.getElementById('nicknameInput').value = savedUser;
+                loadUserData();
+                showDashboard();
+            } else {
+                showLogin();
+            }
+            updateDateDisplay();
+        };
+
+        function updateDateDisplay() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[now.getDay()];
+            
+            document.getElementById('currentDateStr').innerText = `${year}/${month}/${day} ${weekday}`;
+        }
+
+        function selectLoginMood(emoji, name, element) {
+            activeMoodEmoji = emoji;
+            activeMoodName = name;
+            document.querySelectorAll('.login-mood-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-amber-300', 'bg-amber-100');
+            });
+            element.classList.add('ring-4', 'ring-amber-300', 'bg-amber-100');
+        }
+
+        function selectDashboardMood(emoji, name, element) {
+            activeMoodEmoji = emoji;
+            activeMoodName = name;
+            document.getElementById('headerCurrentMood').innerText = `${emoji} ${name}`;
+            document.querySelectorAll('.dash-mood-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-amber-300', 'bg-amber-100');
+            });
+            element.classList.add('ring-4', 'ring-amber-300', 'bg-amber-100');
+        }
+
+        function handleLogin() {
+            const input = document.getElementById('nicknameInput');
+            const nickname = input.value.trim();
+            const errorEl = document.getElementById('loginError');
+
+            if (!nickname) {
+                errorEl.classList.remove('hidden');
+                input.focus();
+                return;
+            }
+            errorEl.classList.add('hidden');
+            currentUser = nickname;
+            localStorage.setItem('boy_checkin_nickname', currentUser);
+
+            loadUserData();
+            showDashboard();
+            // Trigger welcome confetti
+            triggerConfetti();
+        }
+
+        function logout() {
+            if (confirm('確定要更改暱稱嗎？')) {
+                localStorage.removeItem('boy_checkin_nickname');
+                currentUser = '';
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('dashboardView').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('dashboardView').classList.remove('hidden');
+            document.getElementById('displayNickname').innerText = currentUser;
+            document.getElementById('headerCurrentMood').innerText = `${activeMoodEmoji} ${activeMoodName}`;
+            
+            // Sync dashboard mood button selection visually
+            const dashButtons = document.querySelectorAll('.dash-mood-btn');
+            dashButtons.forEach((btn, idx) => {
+                if(idx === 0) {
+                    btn.classList.add('ring-4', 'ring-amber-300', 'bg-amber-100');
+                }
+            });
+            updateUI();
+        }
+
+        function performCheckIn() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const dateStr = `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
+            const dateOnlyStr = `${year}/${month}/${day}`;
+
+            const newRecord = {
+                id: Date.now(),
+                dateStr: dateStr,
+                dateOnly: dateOnlyStr,
+                emoji: activeMoodEmoji,
+                name: activeMoodName
+            };
+
+            historyData.unshift(newRecord);
+            saveUserData();
+            updateUI();
+            triggerConfetti();
+        }
+
+        function triggerConfetti() {
+            confetti({
+                particleCount: 90,
+                spread: 75,
+                origin: { y: 0.6 },
+                colors: ['#34d399', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6']
+            });
+        }
+
+        function saveDataKey() {
+            return `boy_checkin_history_${currentUser}`;
+        }
+
+        function loadUserData() {
+            const saved = localStorage.getItem(saveDataKey());
+            if (saved) {
+                try {
+                    historyData = JSON.parse(saved);
+                } catch (e) {
+                    historyData = [];
+                }
+            } else {
+                historyData = [];
+            }
+            updateUI();
+        }
+
+        function saveUserData() {
+            localStorage.setItem(saveDataKey(), JSON.stringify(historyData));
+        }
+
+        function updateUI() {
+            const todayDateOnly = new Date();
+            const tYear = todayDateOnly.getFullYear();
+            const tMonth = String(todayDateOnly.getMonth() + 1).padStart(2, '0');
+            const tDay = String(todayDateOnly.getDate()).padStart(2, '0');
+            const todayPrefix = `${tYear}/${tMonth}/${tDay}`;
+
+            let todayCount = 0;
+            historyData.forEach(item => {
+                if (item.dateOnly === todayPrefix) {
+                    todayCount++;
+                }
+            });
+
+            document.getElementById('todayCount').innerText = todayCount;
+            document.getElementById('totalCount').innerText = historyData.length;
+
+            const historyListEl = document.getElementById('historyList');
+            if (historyData.length === 0) {
+                historyListEl.innerHTML = `
+                    <div class="text-center py-6 text-slate-400 text-sm font-semibold bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                        目前還沒有打卡紀錄喔，快按上方按鈕打卡吧！🌿
+                    </div>
+                `;
+                return;
+            }
+
+            let htmlContent = '';
+            historyData.forEach((item, index) => {
+                htmlContent += `
+                    <div class="flex items-center justify-between p-3.5 bg-slate-50 hover:bg-emerald-50/50 rounded-2xl border border-slate-200/80 transition-colors shadow-xs">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl bg-white p-2 rounded-xl shadow-xs border border-slate-200">${item.emoji}</span>
+                            <div>
+                                <span class="text-xs sm:text-sm font-bold text-slate-700 block">${item.name}心情打卡</span>
+                                <span class="text-xs text-slate-400 font-semibold">${item.dateStr}</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full shadow-xs border border-emerald-200">#${historyData.length - index}</span>
+                    </div>
+                `;
+            });
+            historyListEl.innerHTML = htmlContent;
+        }
+
+        function clearHistory() {
+            if (historyData.length === 0) return;
+            if (confirm('確定要清空所有的打卡紀錄嗎？')) {
+                historyData = [];
+                saveUserData();
+                updateUI();
+            }
+        }
+    </script>
+</body>
+</html>
